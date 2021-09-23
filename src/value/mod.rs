@@ -879,6 +879,9 @@ mod index;
 mod partial_eq;
 mod ser;
 
+#[cfg(feature = "generic")]
+mod generic;
+
 /// Convert a `T` into `serde_json::Value` which is an enum that can represent
 /// any valid JSON data.
 ///

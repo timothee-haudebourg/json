@@ -358,6 +358,7 @@
 #![deny(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(feature = "cc-traits", feature(generic_associated_types))]
 
 ////////////////////////////////////////////////////////////////////////////////
 

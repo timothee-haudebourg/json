@@ -897,3 +897,120 @@ type ValuesMutImpl<'a> = btree_map::ValuesMut<'a, String, Value>;
 type ValuesMutImpl<'a> = indexmap::map::ValuesMut<'a, String, Value>;
 
 delegate_iterator!((ValuesMut<'a>) => &'a mut Value);
+
+#[cfg(feature = "cc-traits")]
+mod cc_trairs_impls {
+    use super::{Iter, IterMut, Map, Value};
+    use cc_traits::{
+        Clear, Collection, CollectionMut, CollectionRef, Get, GetMut, Keyed, KeyedRef, Len,
+        MapInsert, MapIter, MapIterMut, Remove, WithCapacity,
+    };
+    use std::borrow::Borrow;
+    use std::hash::Hash;
+
+    impl Collection for Map<String, Value> {
+        type Item = Value;
+    }
+
+    impl CollectionRef for Map<String, Value> {
+        type ItemRef<'r>
+        where
+            Self: 'r,
+        = &'r Value;
+    }
+
+    impl CollectionMut for Map<String, Value> {
+        type ItemMut<'r>
+        where
+            Self: 'r,
+        = &'r mut Value;
+    }
+
+    impl Keyed for Map<String, Value> {
+        type Key = String;
+    }
+
+    impl KeyedRef for Map<String, Value> {
+        type KeyRef<'r>
+        where
+            Self: 'r,
+        = &'r String;
+    }
+
+    impl WithCapacity for Map<String, Value> {
+        fn with_capacity(capacity: usize) -> Self {
+            Self::with_capacity(capacity)
+        }
+    }
+
+    impl Len for Map<String, Value> {
+        fn len(&self) -> usize {
+            self.len()
+        }
+    }
+
+    impl<'a, Q> Get<&'a Q> for Map<String, Value>
+    where
+        String: Borrow<Q>,
+        Q: Eq + Ord + Hash + ?Sized,
+    {
+        #[inline(always)]
+        fn get(&self, key: &'a Q) -> Option<&Value> {
+            self.get(key)
+        }
+    }
+
+    impl<'a, Q> GetMut<&'a Q> for Map<String, Value>
+    where
+        String: Borrow<Q>,
+        Q: Eq + Ord + Hash + ?Sized,
+    {
+        #[inline(always)]
+        fn get_mut(&mut self, key: &'a Q) -> Option<&mut Value> {
+            self.get_mut(key)
+        }
+    }
+
+    impl MapInsert<String> for Map<String, Value> {
+        type Output = Option<Value>;
+
+        #[inline(always)]
+        fn insert(&mut self, key: String, value: Value) -> Option<Value> {
+            self.insert(key, value)
+        }
+    }
+
+    impl MapIter for Map<String, Value> {
+        type Iter<'a> = Iter<'a>;
+
+        fn iter(&self) -> Self::Iter<'_> {
+            self.iter()
+        }
+    }
+
+    impl MapIterMut for Map<String, Value> {
+        type IterMut<'a> = IterMut<'a>;
+
+        fn iter_mut(&mut self) -> Self::IterMut<'_> {
+            self.iter_mut()
+        }
+    }
+
+    impl<'a, Q> Remove<&'a Q> for Map<String, Value>
+    where
+        String: Borrow<Q>,
+        Q: Eq + Ord + Hash + ?Sized,
+    {
+        #[inline(always)]
+        fn remove(&mut self, key: &'a Q) -> Option<Value> {
+            self.remove(key)
+        }
+    }
+
+    impl Clear for Map<String, Value> {
+        #[inline(always)]
+        fn clear(&mut self) {
+            self.clear()
+        }
+    }
+}
